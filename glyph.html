@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glyph - Image Translator</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* App Header */
+    header {
+      width: 100%;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    /* Main Container */
+    main {
+      width: 100%;
+      max-width: 800px;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    /* Viewer Section (Image + Nav Arrows) */
+    .viewer-container {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-wrapper {
+      width: 100%;
+      max-width: 550px;
+      height: 350px;
+      background-color: var(--card-bg);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .image-placeholder {
+      color: var(--text-muted);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .nav-arrow:hover {
+      background-color: var(--border);
+      color: var(--accent);
+    }
+
+    .nav-arrow.prev { left: -10px; }
+    .nav-arrow.next { right: -10px; }
+
+    /* Translation Text Output Section */
+    .text-panel {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .text-box {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      min-height: 140px;
+    }
+
+    .text-box h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .text-box p {
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    /* Responsive adjustment for small screens */
+    @media (max-width: 640px) {
+      .text-panel {
+        grid-template-columns: 1fr;
+      }
+      .nav-arrow.prev { left: 5px; }
+      .nav-arrow.next { right: 5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Glyph</h1>
+  </header>
+
+  <main>
+    <!-- Image with side navigation -->
+    <section class="viewer-container">
+      <button class="nav-arrow prev" aria-label="Previous image">&#10094;</button>
+
+      <div class="image-wrapper">
+        <div class="image-placeholder">
+          <p>[ Image Preview ]</p>
+        </div>
+      </div>
+
+      <button class="nav-arrow next" aria-label="Next image">&#10095;</button>
+    </section>
+
+    <!-- Text display area -->
+    <section class="text-panel">
+      <div class="text-box">
+        <h3>Original Text</h3>
+        <p>Bonjour le monde, ceci est un exemple de texte à traduire.</p>
+      </div>
+
+      <div class="text-box">
+        <h3>Translated Text</h3>
+        <p>Hello world, this is an example of text to translate.</p>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
