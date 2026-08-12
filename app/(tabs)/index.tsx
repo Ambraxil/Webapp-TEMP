@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
 import { useEffect, useState } from 'react';
-import { getImageUrl } from '@/app/api/azure';
+import { getImageUrl, uploadImageWithText } from '@/app/api/azure';
 import data from '@/app/data.json';
 
 interface Translation {
@@ -15,6 +15,7 @@ export default function HomeScreen() {
   const [translations, setTranslations] = useState<Translation[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageUrl, setImageUrl] = useState('');
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     // Load translations from JSON
@@ -25,8 +26,11 @@ export default function HomeScreen() {
     // Update image URL when current translation changes
     if (translations.length > 0) {
       const currentTranslation = translations[currentIndex];
-      const url = getImageUrl(currentTranslation.imageName);
-      setImageUrl(url);
+
+      void (async () => {
+        const url = await getImageUrl(currentTranslation.imageName);
+        setImageUrl(url);
+      })();
     }
   }, [currentIndex, translations]);
 
@@ -37,6 +41,19 @@ export default function HomeScreen() {
 
   const handleNext = () => {
     setCurrentIndex(prev => (prev === translations.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleUpload = async () => {
+    if (!currentTranslation || !imageUrl) return;
+
+    setStatus('Uploading...');
+    const uploadedUrl = await uploadImageWithText(currentTranslation.imageName, currentTranslation.originalText, imageUrl);
+
+    if (uploadedUrl) {
+      setStatus('Image uploaded with original text');
+    } else {
+      setStatus('Upload failed');
+    }
   };
 
   if (!currentTranslation) return null;
@@ -54,7 +71,11 @@ export default function HomeScreen() {
 
           <View style={styles.previewCard}>
             {imageUrl ? (
-              <Image source={{ uri: imageUrl }} style={styles.previewImage} />
+              <Image
+                source={{ uri: imageUrl }}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
             ) : (
               <Text style={styles.previewText}>[ Image Preview ]</Text>
             )}
@@ -80,6 +101,12 @@ export default function HomeScreen() {
             </Text>
           </View>
         </View>
+
+        <Pressable style={styles.uploadButton} onPress={handleUpload} accessibilityLabel="Upload current image with original text">
+          <Text style={styles.uploadText}>Upload current image</Text>
+        </Pressable>
+
+        {status ? <Text style={styles.statusText}>{status}</Text> : null}
       </View>
     </SafeAreaView>
   );
@@ -155,6 +182,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    overflow: 'hidden',
   },
   previewText: {
     fontSize: 18,
@@ -167,6 +195,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 16,
+    backgroundColor: '#0a1f2f',
   },
   textGrid: {
     flexDirection: 'row',
@@ -197,5 +226,26 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 26,
     fontWeight: '500',
+  },
+  uploadButton: {
+    marginTop: 18,
+    alignSelf: 'center',
+    backgroundColor: '#36baf6',
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  uploadText: {
+    color: '#041824',
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  statusText: {
+    marginTop: 10,
+    textAlign: 'center',
+    color: '#dfeaf3',
+    fontSize: 13,
+    minHeight: 18,
   },
 });

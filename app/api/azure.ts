@@ -1,33 +1,57 @@
-const accountName = process.env.EXPO_PUBLIC_AZURE_ACCOUNT_NAME || "";
-const accountKey = process.env.EXPO_PUBLIC_AZURE_ACCOUNT_KEY || "";
-const containerName = "images";
+const apiEndpoint = process.env.EXPO_PUBLIC_API_ENDPOINT || 'http://localhost:3001';
 
-/**
- * Generate a direct SAS URL (no backend needed)
- */
-export function getImageUrl(blobName: string, expiryHours: number = 24): string {
-  if (!accountName || !accountKey) {
-    console.error("Azure credentials not configured");
-    return "";
+export async function getImageUrl(blobName: string, expiryHours: number = 24): Promise<string> {
+  try {
+    const response = await fetch(`${apiEndpoint}/api/azure/sas-url`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blobName, expiryHours }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch SAS URL: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.url || '';
+  } catch (error) {
+    console.error('Azure image URL error:', error);
+    return '';
   }
+}
 
-  // Calculate expiry time
-  const startsOn = new Date();
-  const expiresOn = new Date(startsOn.getTime() + expiryHours * 60 * 60 * 1000);
-  const expiresOnIso = expiresOn.toISOString().replace(/\.\d{3}Z/, "Z");
+export async function uploadImageWithText(blobName: string, originalText: string, imageUrl: string): Promise<string> {
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const base64 = await blobToBase64(blob);
 
-  // Build the SAS token string to sign
-  const stringToSign = [
-    "r", // permissions
-    "", // start
-    expiresOnIso,
-    `/${containerName}/${blobName}`,
-    "", // signed identifier
-    "", // IP
-    "https", // protocol
-    "2023-01-03", // api-version
-  ].join("\n");
+    const uploadResponse = await fetch(`${apiEndpoint}/api/azure/upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blobName, originalText, imageBase64: base64 }),
+    });
 
-  // Simple direct URL (no signature needed for images with account key in query)
-  return `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+    if (!uploadResponse.ok) {
+      throw new Error(`Upload failed: ${uploadResponse.status}`);
+    }
+
+    const data = await uploadResponse.json();
+    return data.url || '';
+  } catch (error) {
+    console.error('Upload image error:', error);
+    return '';
+  }
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      resolve(result.replace(/^data:image\/[a-zA-Z0-9.+-]+;base64,/, ''));
+    };
+    reader.onerror = () => reject(new Error('Could not read image blob'));
+    reader.readAsDataURL(blob);
+  });
 }
