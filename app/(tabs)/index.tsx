@@ -1,7 +1,45 @@
 import React from 'react';
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, Text, View, Image } from 'react-native';
+import { useEffect, useState } from 'react';
+import { getImageUrl } from '@/app/api/azure';
+import data from '@/app/data.json';
+
+interface Translation {
+  id: number;
+  imageName: string;
+  originalText: string;
+  translatedText: string;
+}
 
 export default function HomeScreen() {
+  const [translations, setTranslations] = useState<Translation[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageUrl, setImageUrl] = useState('');
+
+  useEffect(() => {
+    // Load translations from JSON
+    setTranslations(data.translations);
+  }, []);
+
+  useEffect(() => {
+    // Update image URL when current translation changes
+    if (translations.length > 0) {
+      const currentTranslation = translations[currentIndex];
+      const url = getImageUrl(currentTranslation.imageName);
+      setImageUrl(url);
+    }
+  }, [currentIndex, translations]);
+
+  const currentTranslation = translations[currentIndex];
+  const handlePrevious = () => {
+    setCurrentIndex(prev => (prev === 0 ? translations.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex(prev => (prev === translations.length - 1 ? 0 : prev + 1));
+  };
+
+  if (!currentTranslation) return null;
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -10,15 +48,19 @@ export default function HomeScreen() {
         <View style={styles.headerDivider} />
 
         <View style={styles.previewRow}>
-          <Pressable style={styles.navButton} accessibilityLabel="Previous preview">
+          <Pressable style={styles.navButton} onPress={handlePrevious} accessibilityLabel="Previous preview">
             <Text style={styles.navText}>{'<'}</Text>
           </Pressable>
 
           <View style={styles.previewCard}>
-            <Text style={styles.previewText}>[ Image Preview ]</Text>
+            {imageUrl ? (
+              <Image source={{ uri: imageUrl }} style={styles.previewImage} />
+            ) : (
+              <Text style={styles.previewText}>[ Image Preview ]</Text>
+            )}
           </View>
 
-          <Pressable style={styles.navButton} accessibilityLabel="Next preview">
+          <Pressable style={styles.navButton} onPress={handleNext} accessibilityLabel="Next preview">
             <Text style={styles.navText}>{'>'}</Text>
           </Pressable>
         </View>
@@ -27,14 +69,14 @@ export default function HomeScreen() {
           <View style={styles.textCard}>
             <Text style={styles.cardLabel}>ORIGINAL TEXT</Text>
             <Text style={styles.cardText}>
-              Bonjour le monde, ceci est un exemple de texte à traduire.
+              {currentTranslation.originalText}
             </Text>
           </View>
 
           <View style={styles.textCard}>
             <Text style={styles.cardLabel}>TRANSLATED TEXT</Text>
             <Text style={styles.cardText}>
-              Hello world, this is an example of text to translate.
+              {currentTranslation.translatedText}
             </Text>
           </View>
         </View>
@@ -120,6 +162,11 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     letterSpacing: 0.4,
     fontWeight: '400',
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 16,
   },
   textGrid: {
     flexDirection: 'row',
