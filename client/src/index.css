@@ -51,15 +51,17 @@ main {
 
 .viewer-container {
   position: relative;
-  width: 100%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0 2.75rem;
 }
 
 .image-wrapper {
-  width: 100%;
-  max-width: 550px;
+  width: min(550px, calc(100vw - 180px));
+  max-width: 100%;
   height: 350px;
   background-color: var(--card-bg);
   border: 1px dashed var(--border);
@@ -86,6 +88,7 @@ main {
 .nav-arrow {
   position: absolute;
   top: 50%;
+  z-index: 2;
   transform: translateY(-50%);
   background-color: var(--card-bg);
   color: var(--text-main);
@@ -111,8 +114,15 @@ main {
   cursor: not-allowed;
 }
 
-.nav-arrow.prev { left: -10px; }
-.nav-arrow.next { right: -10px; }
+.nav-arrow.prev {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.nav-arrow.next {
+  right: 0;
+  transform: translate(50%, -50%);
+}
 
 .meta-row {
   width: 100%;
@@ -164,6 +174,18 @@ main {
   .text-panel {
     grid-template-columns: 1fr;
   }
-  .nav-arrow.prev { left: 5px; }
-  .nav-arrow.next { right: 5px; }
+
+  .viewer-container {
+    padding: 0 2rem;
+  }
+
+  .nav-arrow.prev {
+    left: 0.5rem;
+    transform: translate(0, -50%);
+  }
+
+  .nav-arrow.next {
+    right: 0.5rem;
+    transform: translate(0, -50%);
+  }
 }
