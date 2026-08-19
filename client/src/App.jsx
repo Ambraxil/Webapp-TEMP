@@ -4,7 +4,7 @@ const TEAM = [
   { name: "David Obi", role: "Website Manager" },
   { name: "Josh Angeles", role: "Database Manager", linkedin: "https://www.linkedin.com/in/josh-angeles-55033a349" },
   { name: "Alex Hooks", role: "Raspberry Pi Developer" },
-  { name: "Hamza Rasheed", role: "Raspberry Pi Developer", linkedin: "https://www.linkedin.com/in/hamza-rasheed-43213a2ba/" },
+  { name: "Hamza Rasheed", role: "Raspberry Pi Developer", linkedin: "https://www.linkedin.com/in/hamza-rasheed-43213a2ba" },
 ];
 
 export default function App() {
