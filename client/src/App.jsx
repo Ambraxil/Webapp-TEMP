@@ -1,8 +1,8 @@
 // App.jsx
 const TEAM = [
-  { name: "Xander Mulligan", role: "Raspberry Pi Lead" },
+  { name: "Xander Mulligan", role: "Raspberry Pi Lead", linkedin: "https://www.linkedin.com/in/xander-mulligan-254971341" },
   { name: "David Obi", role: "Website Manager" },
-  { name: "Josh Angeles", role: "Database Manager" },
+  { name: "Josh Angeles", role: "Database Manager", linkedin: "https://www.linkedin.com/in/josh-angeles-55033a349" },
   { name: "Alex Hooks", role: "Raspberry Pi Developer" },
   { name: "Hamza Rasheed", role: "Raspberry Pi Developer" },
 ];
@@ -31,7 +31,19 @@ export default function App() {
                   .slice(0, 2)
                   .toUpperCase()}
               </div>
-              <h3>{member.name}</h3>
+              <h3>
+                {member.linkedin ? (
+                  
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {member.name}
+                  </a>
+                ) : (
+                  member.name
+                )}
+              </h3>
               <p>{member.role}</p>
             </div>
           ))}
