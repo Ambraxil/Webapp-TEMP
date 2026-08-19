@@ -1,10 +1,10 @@
 // App.jsx
 const TEAM = [
-  { name: "Xander Mulligan", role: "Raspberry Pi Lead", linkedin: "https://www.linkedin.com/in/xander-mulligan-254971341" },
+  { name: "Xander Mulligan", role: "Raspberry Pi Lead", linkedin: "https://www.linkedin.com/in/xandermulligan" },
   { name: "David Obi", role: "Website Manager" },
-  { name: "Josh Angeles", role: "Database Manager", linkedin: "https://www.linkedin.com/in/josh-angeles-55033a349" },
+  { name: "Josh Angeles", role: "Database Manager", linkedin: "https://www.linkedin.com/in/joshangeles" },
   { name: "Alex Hooks", role: "Raspberry Pi Developer" },
-  { name: "Hamza Rasheed", role: "Raspberry Pi Developer" },
+  { name: "Hamza Rasheed", role: "Raspberry Pi Developer", linkedin: "https://www.linkedin.com/in/hamzarasheed" },
 ];
 
 export default function App() {
@@ -33,7 +33,7 @@ export default function App() {
               </div>
               <h3>
                 {member.linkedin ? (
-                  
+                  <a
                     href={member.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
