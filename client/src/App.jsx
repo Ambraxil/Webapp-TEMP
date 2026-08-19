@@ -1,10 +1,10 @@
 // App.jsx
 const TEAM = [
-  { name: "Xander Mulligan", role: "Raspberry Pi Lead", linkedin: "https://www.linkedin.com/in/xandermulligan" },
+  { name: "Xander Mulligan", role: "Raspberry Pi Lead", linkedin: "https://www.linkedin.com/in/xander-mulligan-254971341" },
   { name: "David Obi", role: "Website Manager" },
-  { name: "Josh Angeles", role: "Database Manager", linkedin: "https://www.linkedin.com/in/joshangeles" },
+  { name: "Josh Angeles", role: "Database Manager", linkedin: "https://www.linkedin.com/in/josh-angeles-55033a349" },
   { name: "Alex Hooks", role: "Raspberry Pi Developer" },
-  { name: "Hamza Rasheed", role: "Raspberry Pi Developer", linkedin: "https://www.linkedin.com/in/hamzarasheed" },
+  { name: "Hamza Rasheed", role: "Raspberry Pi Developer", linkedin: "https://www.linkedin.com/in/hamza-rasheed-43213a2ba/" },
 ];
 
 export default function App() {
